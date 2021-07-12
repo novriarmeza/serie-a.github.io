@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serie A Dictionary</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="shorcut icon" href="icon-192.png">
+
+    <meta name="theme-color" content="#0277bd"/>
+    <link rel="stylesheet" href="src/css/materialize.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/materialicon.css">
+</head>
+<body>
+
+    <!-- Navigasi -->
+    <nav class="navhead" role="navigation">
+      <div class="nav-wrapper container">
+          <a id="logo-container" href="#" class="brand-logo"><img src="" style="padding: 5px;" height="60px"></a>
+          <a href="javascript:history.back()" class="sidenav-trigger">
+              <i class="material-icons">arrow_back</i>
+          </a>
+      </div>
+  </nav>
+  <!-- Akhir Navigasi -->
+  
+    <div class="container">
+        <div class="row class-mt-3">
+            <div class="container home">
+                <img style="height: 200px; width: auto;" src="src/img/seriea.png" alt="seriea">
+                <h4 class="class-font-bold">Detail Match Schedule</h4>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="center-align" id="id-preloader">
+                        <div class="preloader-wrapper big active">
+                            <div class="spinner-layer spinner-blue">
+                                <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="gap-patch">
+                                    <div class="circle"></div>
+                                </div>
+                                <div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 id="id-matchDay" class="center-align"></h5>
+                    <div id="id-kickOff" class="center-align"></div>
+        
+                    <div class="row" style="margin:20px">
+                      <div class="col s5 right-align truncate">
+                        <span id="id-homeTeamName" class="class-font-bold blue-text text-darken-2"></span>
+                      </div>
+                      <div class="col s2 center-align">
+                        VS
+                      </div>
+                      <div class="col s5 left-align truncate">
+                        <span id="id-awayTeamName" class="id-font-bold blue-text text-darken-2"></span>
+                      </div>
+                    </div>
+        
+                    <div class="row center">
+                      <hr size="5px">
+                      <div class="center-align" id="id-venue"></div>
+                      <!-- <h5>Referees</h5> -->
+                      <div class="center-align class-font-bold blue-text text-darken-2" id="id-wasit0"></div>
+                      <div class="center-align class-font-bold blue-text text-darken-2" id="id-wasit1"></div>
+                      <div class="center-align class-font-bold blue-text text-darken-2" id="id-wasit2"></div>
+                      <div class="center-align class-font-bold blue-text text-darken-2" id="id-wasit3"></div>
+                      <div class="center-align class-font-bold blue-text text-darken-2" id="id-wasit4"></div>
+                    </div>
+                    
+                    <div class="row center">
+                        <div id="addTofavorite" class="center-align">
+                            <a id="btnFav">
+                                <p id="iconFav" class="btn css-btn"><img src="src/img/unlike.png" alt="unlike" style="height: 40px;"></p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    <script src="src/js/materialize.min.js"></script>
+    <script src="src/js/main.js"></script>
+    <script src="src/js/api.js"></script>
+    <script src="src/js/database.js"></script>
+    <script src="src/js/idb.js"></script>
+    <script src="src/js/detailschedule.js"></script>
+
+    <script>
+        // REGISTER SERVICE WORKER
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker
+                    .register("/service-worker.js")
+                    .then(function () {
+                        console.log("Pendaftaran ServiceWorker berhasil");
+                    })
+                    .catch(function () {
+                        console.log("Pendaftaran ServiceWorker gagal");
+                    });
+            });
+        } else {
+            console.log("ServiceWorker belum didukung browser ini.");
+        }
+          document.addEventListener("DOMContentLoaded", function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var id = Number(urlParams.get("id"));
+            var isfavorite = false
+            checkData("match_favorite", id).then((msg) => {
+                console.log("statusData: resolve = " + msg)
+                  document.getElementById("iconFav").classList.add('fas');
+                document.getElementById("iconFav").innerHTML = `<img src="src/img/like.png" alt="like" style="height: 40px;">`;
+                getDetailScheduleById("match")
+                isfavorite = true
+            }).catch((msg) => {
+                console.log("statusData: reject = " + msg)
+                document.getElementById("iconFav").classList.remove('fas');
+                document.getElementById("iconFav").classList.add('far');
+                document.getElementById("iconFav").innerHTML = `<img src="src/img/unlike.png" alt="unlike" style="height: 40px;">`;
+                getDetailScheduleById()
+                isfavorite = false
+            })
+
+            var iconFav = document.getElementById("iconFav");
+
+            iconFav.onclick = function () {
+                console.log("Tombol favorite di klik.");
+                if (isfavorite) {
+                    deleteDatafav("match_favorite", id);
+                    isfavorite = false
+                } else {
+                    items = getDetailScheduleById();
+                    items.then(function (match) {
+                        createDataFav("match", match);
+                    });
+                    isfavorite = true
+                }
+            };
+        });
+    </script>
+</body>
+
+</html>

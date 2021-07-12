@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serie A Dictionary</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" sizes="512x512" href="icon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
+    <link rel="shorcut icon" href="icon-192.png">
+
+    <meta name="theme-color" content="#0277bd"/>
+    <link rel="stylesheet" href="src/css/materialize.min.css">
+    <link rel="stylesheet" href="src/css/style.css">
+    <link rel="stylesheet" href="src/css/materialicon.css">
+</head>
+<body>
+
+    <!-- Navigasi -->
+    <nav class="navhead" role="navigation">
+        <div class="nav-wrapper container">
+            <a id="logo-container" href="#" class="brand-logo"><img src="" style="padding: 5px;" height="60px"></a>
+            <a href="javascript:history.back()" class="sidenav-trigger">
+                <i class="material-icons">arrow_back</i>
+            </a>
+        </div>
+    </nav>
+    <!-- Akhir Navigasi -->
+
+
+        <div class="container">
+            <div class="container home">
+                <img style="height: 200px; width: auto;" src="src/img/seriea.png" alt="seriea">
+                <h4 class="class-font-bold">Player</h4>
+            </div>
+        <div class="row mt-3">
+            <div class="card-content">
+                <div class="center-align">
+                    <h5 class="class-bold mb-3">Detail Player</h5>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-tabs">
+                    <div class="card-content">
+                        <div class="center-align" id="id-preloader">
+                            <div class="preloader-wrapper big active">
+                                <div class="spinner-layer spinner-blue">
+                                    <div class="circle-clipper left">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="gap-patch">
+                                        <div class="circle"></div>
+                                    </div>
+                                    <div class="circle-clipper right">
+                                        <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="entry">
+                            <div class="row">
+                                <div id="addTofavorite" class="center-align">
+                                    <a id="btnFav">
+                                        <p id="iconFav" class="btn css-btn"><img src="src/img/unlike.png" alt="unlike" style="height: 40px;"></p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s5">
+                                    <p>Name</p>
+                                </div>
+                                <div class="col s1">
+                                    :
+                                </div>
+                                <div class="col s6">
+                                    <div id="id-nama"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s5">
+                                    <p>First Name</p>
+                                </div>
+                                <div class="col s1">
+                                    :
+                                </div>
+                                <div class="col s6">
+                                    <div id="id-firstName"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s5">
+                                    <p>Last Name</p>
+                                </div>
+                                <div class="col s1">
+                                    :
+                                </div>
+                                <div class="col s6">
+                                    <div id="id-lastName"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s5">
+                                    <p>Date Of Birth</p>
+                                </div>
+                                <div class="col s1">
+                                    :
+                                </div>
+                                <div class="col s6">
+                                    <div id="id-dateOfBirth"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s5">
+                                    <p>Country Of Birth</p>
+                                </div>
+                                <div class="col s1">
+                                    :
+                                </div>
+                                <div class="col s6">
+                                    <div id="id-countryOfBirth"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s5">
+                                    <p>Nationality</p>
+                                </div>
+                                <div class="col s1">
+                                    :
+                                </div>
+                                <div class="col s6">
+                                    <div id="id-nationality"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col s5">
+                                    <p>Position</p>
+                                </div>
+                                <div class="col s1">
+                                    :
+                                </div>
+                                <div class="col s6">
+                                    <div id="id-position"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+   
+    <script src="src/js/materialize.min.js"></script>
+    <script src="src/js/main.js"></script>
+    <script src="src/js/api.js"></script>
+    <script src="src/js/database.js"></script>
+    <script src="src/js/idb.js"></script>
+    <script src="src/js/team.js"></script>
+
+  <script>
+        // REGISTER SERVICE WORKER
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker
+                    .register("/service-worker.js")
+                    .then(function () {
+                        console.log("Pendaftaran ServiceWorker berhasil");
+                    })
+                    .catch(function () {
+                        console.log("Pendaftaran ServiceWorker gagal");
+                    });
+            });
+        } else {
+            console.log("ServiceWorker belum didukung browser ini.");
+        }
+         document.addEventListener("DOMContentLoaded", function () {
+            var urlParams = new URLSearchParams(window.location.search);
+            var id = Number(urlParams.get("id"));
+            var isFavorite = false
+            checkData("player_favorite", id).then((msg) => {
+                console.log("statusData: resolve = " + msg)
+                document.getElementById("iconFav").classList.add('fas');
+                document.getElementById("iconFav").innerHTML = `<img src="src/img/like.png" alt="like" style="height: 40px;">`;
+                getSavedDataById("player");
+                isFavorit = true
+            }).catch((msg) => {
+                console.log("statusData: reject = " + msg)
+                document.getElementById("iconFav").classList.remove('fas');
+                document.getElementById("iconFav").classList.add('far');
+                document.getElementById("iconFav").innerHTML = `<img src="src/img/unlike.png" alt="unlike" style="height: 40px;">`;
+                getPlayer();
+                isFavorit = false
+            })
+
+            var iconFav = document.getElementById("iconFav");
+
+            iconFav.onclick = function () {
+                console.log("Tombol Favorit di klik.");
+                if (isFavorite) {
+                    deleteDatafav("player_favorite", id);
+                    isFavorite = false
+                } else {
+                    items = getPlayer();
+                    items.then(function (player) {
+                        createDataFav("player", player);
+                    });
+                    isFavorite = true
+                }
+            };
+        });
+    </script>
+</body>
+
+</html>
